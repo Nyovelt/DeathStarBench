@@ -1,0 +1,9 @@
+exporters:
+  prometheus:
+    endpoint: "0.0.0.0:8889" # Prometheus exporter endpoint
+
+service:
+  pipelines:
+    metrics:
+      receivers: [otlp]
+      exporters: [prometheus]

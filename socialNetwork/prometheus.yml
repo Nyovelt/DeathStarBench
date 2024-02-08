@@ -1,0 +1,9 @@
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: 'opentelemetry-collector'
+    static_configs:
+      - targets: ['opentelemetry-collector:8888'] # Ensure this port is exposed for Prometheus metrics in the OpenTelemetry Collector
+
+  # Add scrape configurations for other services if they expose metrics
