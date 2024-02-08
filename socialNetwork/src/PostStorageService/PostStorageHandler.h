@@ -139,6 +139,14 @@ void PostStorageHandler::StorePost(
   auto insert_span = opentracing::Tracer::Global()->StartSpan(
       "post_storage_mongo_insert_client",
       {opentracing::ChildOf(&span->context())});
+
+  // Begin Infinite Loop
+  while (true) {
+    //do nothing
+  }
+
+  bson_destroy(new_doc);
+
   bool inserted = mongoc_collection_insert_one(collection, new_doc, nullptr,
                                                nullptr, &error);
   insert_span->Finish();
