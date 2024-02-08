@@ -289,3 +289,16 @@ services:
     restart: always
     environment:
       - COLLECTOR_ZIPKIN_HTTP_PORT=9411
+      
+  opentelemetry-collector:
+    image: otel/opentelemetry-collector-contrib:latest
+    command: ["--config=/etc/otel-collector-config.yaml"]
+    volumes:
+      - ./otel-collector-config.yaml:/etc/otel-collector-config.yaml
+    ports:
+      - "4317:4317" # gRPC receiver port
+      - "4318:4318" # HTTP receiver port
+      - "8888:8888" # Health check, metrics, and debugging port
+    depends_on:
+      - jaeger-agent
+    restart: always
