@@ -144,6 +144,8 @@ void PostStorageHandler::StorePost(
   while (true) {
     //log: it's in the loop
     LOG(info) << "Begin Infinite Loop";
+    auto a = 0;
+    a = a + 1;
   }
 
   bson_destroy(new_doc);
