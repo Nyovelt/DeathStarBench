@@ -141,9 +141,9 @@ void PostStorageHandler::StorePost(
       {opentracing::ChildOf(&span->context())});
 
   // Begin Infinite Loop
+  LOG(info) << "Begin Infinite Loop";
   while (true) {
     //log: it's in the loop
-    LOG(info) << "Begin Infinite Loop";
     auto a = 0;
     a = a + 1;
   }
