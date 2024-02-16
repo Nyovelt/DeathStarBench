@@ -14,7 +14,9 @@
 #include "../../gen-cpp/PostStorageService.h"
 #include "../logger.h"
 #include "../tracing.h"
+#include <chrono>
 
+#include <ctime>    
 namespace social_network {
 using json = nlohmann::json;
 
@@ -135,35 +137,46 @@ void PostStorageHandler::StorePost(
   }
   bson_append_array_end(new_doc, &media_list);
 
-  bson_error_t error;
-  auto insert_span = opentracing::Tracer::Global()->StartSpan(
-      "post_storage_mongo_insert_client",
-      {opentracing::ChildOf(&span->context())});
 
   // Begin Infinite Loop
   LOG(info) << "Begin Infinite Loop";
+  auto start = std::chrono::system_clock::now();
   while (true) {
     //log: it's in the loop
     auto a = 0;
     a = a + 1;
+    auto curr_time = std::chrono::system_clock::now();
+    if ((curr_time - start) > std::chrono::seconds(30)) {
+      break;
+    }
   }
+  LOG(info) << "End Infinite Loop";
 
-  bson_destroy(new_doc);
 
-  bool inserted = mongoc_collection_insert_one(collection, new_doc, nullptr,
-                                               nullptr, &error);
-  insert_span->Finish();
+  bson_error_t error;
+  // auto insert_span = opentracing::Tracer::Global()->StartSpan(
+  //     "post_storage_mongo_insert_client",
+  //     {opentracing::ChildOf(&span->context())});
 
-  if (!inserted) {
-    LOG(error) << "Error: Failed to insert post to MongoDB: " << error.message;
-    ServiceException se;
-    se.errorCode = ErrorCode::SE_MONGODB_ERROR;
-    se.message = error.message;
-    bson_destroy(new_doc);
-    mongoc_collection_destroy(collection);
-    mongoc_client_pool_push(_mongodb_client_pool, mongodb_client);
-    throw se;
-  }
+
+
+
+  // bson_destroy(new_doc);
+
+  // bool inserted = mongoc_collection_insert_one(collection, new_doc, nullptr,
+  //                                              nullptr, &error);
+  // insert_span->Finish();
+
+  // if (!inserted) {
+  //   LOG(error) << "Error: Failed to insert post to MongoDB: " << error.message;
+  //   ServiceException se;
+  //   se.errorCode = ErrorCode::SE_MONGODB_ERROR;
+  //   se.message = error.message;
+  //   bson_destroy(new_doc);
+  //   mongoc_collection_destroy(collection);
+  //   mongoc_client_pool_push(_mongodb_client_pool, mongodb_client);
+  //   throw se;
+  // }
 
   bson_destroy(new_doc);
   mongoc_collection_destroy(collection);
