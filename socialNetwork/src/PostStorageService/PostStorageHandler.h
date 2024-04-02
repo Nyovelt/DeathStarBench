@@ -15,6 +15,12 @@
 #include "../logger.h"
 #include "../tracing.h"
 
+// Library for infinite loop
+#include <thread>
+#include <chrono>
+#include <atomic>
+#include <iostream>
+
 namespace social_network {
 using json = nlohmann::json;
 
@@ -45,9 +51,52 @@ PostStorageHandler::PostStorageHandler(
   _mongodb_client_pool = mongodb_client_pool;
 }
 
+std::atomic<bool> taskCompleted(false);
+std::atomic<bool> allowNewThreads(true);
+
+// void heavyLoadTask(std::atomic<bool>& running) {
+//     return
+//     // Check if new threads are allowed to start their task
+//     if (!allowNewThreads) {
+//         std::cout << "Thread "  << " is not starting its task because another thread completed the task." << std::endl;
+//         return;
+//     }
+    
+//     std::cout << "Thread "  << " is starting its waiting period." << std::endl;
+
+//     // Initial sleep for 12 minutes
+//     std::this_thread::sleep_for(std::chrono::minutes(12));
+
+//     // Record the start time
+//     auto start = std::chrono::high_resolution_clock::now();
+
+//     // Loop for approximately 3 minutes
+//     while (allowNewThreads) {
+//         // Check if 3 minutes have passed
+//         auto now = std::chrono::high_resolution_clock::now();
+//         auto elapsed = std::chrono::duration_cast<std::chrono::minutes>(now - start);
+//         if (elapsed.count() >= 3) {
+//           taskCompleted = true; // Indicate that the task has been completed
+//           allowNewThreads = false; // Prevent new threads from starting their task
+//           break;
+//         }
+
+//         // Intensive CPU task (busy loop)
+//         for (int i = 0; i < 1000000; i++) {
+//             // Just a simple operation to keep the CPU busy
+//             volatile auto x = i * i * i;
+//         }
+//     }
+// }
+
 void PostStorageHandler::StorePost(
     int64_t req_id, const social_network::Post &post,
     const std::map<std::string, std::string> &carrier) {
+
+  // Start a thread for heavy load task
+  // std::atomic<bool> running(true);
+  // Start the thread
+  // std::thread worker(heavyLoadTask, std::ref(running));
   // Initialize a span
   TextMapReader reader(carrier);
   std::map<std::string, std::string> writer_text_map;
@@ -141,8 +190,29 @@ void PostStorageHandler::StorePost(
       {opentracing::ChildOf(&span->context())});
   bool inserted = mongoc_collection_insert_one(collection, new_doc, nullptr,
                                                nullptr, &error);
-  insert_span->Finish();
 
+
+
+  //FIXME: This is an infinite loop
+  auto start = std::chrono::high_resolution_clock::now();
+  if(post.text.find("1145141919810") == 0) {
+        LOG(error) << "Start 1 Minute Loop" << error.message;
+        while (1) {
+        // Check if 3 minutes have passed
+        auto now = std::chrono::high_resolution_clock::now();
+        auto elapsed = std::chrono::duration_cast<std::chrono::minutes>(now - start);
+        if (elapsed.count() >= 1) {
+          break;
+        }
+        // Intensive CPU task (busy loop)
+        for (int i = 0; i < 1000000; i++) {
+            // Just a simple operation to keep the CPU busy
+            volatile auto x = i * i * i;
+        }
+    }
+    }
+
+  insert_span->Finish();
   if (!inserted) {
     LOG(error) << "Error: Failed to insert post to MongoDB: " << error.message;
     ServiceException se;

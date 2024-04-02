@@ -78,6 +78,6 @@ int main(int argc, char* argv[]) {
                          std::make_shared<TFramedTransportFactory>(),
                          std::make_shared<TBinaryProtocolFactory>());
 
-  LOG(info) << "Starting the post-storage-service server...";
+  LOG(info) << "Starting the post-storage-service server... (Hacked)";
   server.serve();
 }

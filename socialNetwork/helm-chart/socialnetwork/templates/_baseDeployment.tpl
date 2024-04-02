@@ -47,10 +47,12 @@ spec:
         {{- end }}
         {{- if .resources }}  
         resources:
-          {{ tpl .resources $ | nindent 10 | trim }}
-        {{- else if hasKey $.Values.global "resources" }}           
-        resources:
-          {{ tpl $.Values.global.resources $ | nindent 10 | trim }}
+          requests:
+            cpu: "250m"
+            ephemeral-storage: "1Gi"
+          limits:
+            cpu: "1000m"
+            ephemeral-storage: "2Gi"
         {{- end }}  
         {{- if $.Values.configMaps }}        
         volumeMounts: 
