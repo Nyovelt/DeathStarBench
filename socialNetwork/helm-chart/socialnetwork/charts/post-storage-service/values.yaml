@@ -10,6 +10,13 @@ container:
   name: post-storage-service
   ports: 
   - containerPort: 9090
+  resources: # This section limits the CPU and memory usage
+    limits:
+      cpu: "1" # Limit to 1 CPU core
+      memory: "512Mi" # Limit to 512 MiB of memory
+    requests:
+      cpu: "0.5" # Request 0.5 CPU core at the minimum
+      memory: "256Mi" # Request 256 MiB of memory at the minimum
 
 configMaps:
   - name: jaeger-config.yml
