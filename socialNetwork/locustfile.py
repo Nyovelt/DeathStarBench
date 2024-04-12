@@ -34,8 +34,8 @@ class MyUser(HttpUser):
         elapsed_time = now - START_TIME  # Calculate elapsed time since the start
         text = ""
         # Only prepend "1145141919810" to the text after 12 minutes and before 15 minutes have elapsed since the start
-        if 720 <= elapsed_time < 900:  # 11 * 60 seconds = , 13 * 60 seconds = 
-            text = "1145141919810"
+        # if 720 <= elapsed_time < 900:  # 11 * 60 seconds = , 13 * 60 seconds = 
+        #     text = "1145141919810"
         text += self.string_random(256)
         num_user_mentions = random.randint(0, 5)
         num_urls = random.randint(0, 5)

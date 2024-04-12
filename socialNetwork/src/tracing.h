@@ -54,7 +54,7 @@ void SetUpTracer(
     const std::string &config_file_path,
     const std::string &service) {
   auto configYAML = YAML::LoadFile(config_file_path);
-
+  configYAML["disabled"] = true;
   // Enable local Jaeger agent, by prepending the service name to the default
   // Jaeger agent's hostname
   // configYAML["reporter"]["localAgentHostPort"] = service + "-" +
