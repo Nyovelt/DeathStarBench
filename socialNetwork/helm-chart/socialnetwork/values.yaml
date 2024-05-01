@@ -33,7 +33,7 @@ global:
   nginx:
     resolverName: kube-dns.kube-system.svc.cluster.local
   jaeger:
-    localAgentHostPort: jaeger:6831
+    localAgentHostPort: 192.168.88.37:6831
     queueSize: 1000000
     bufferFlushInterval: 10
     samplerType: probabilistic

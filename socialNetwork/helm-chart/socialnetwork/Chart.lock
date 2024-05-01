@@ -8,9 +8,6 @@ dependencies:
 - name: home-timeline-service
   repository: ""
   version: 0.1.0
-- name: jaeger
-  repository: ""
-  version: 0.1.0
 - name: media-service
   repository: ""
   version: 0.1.0
